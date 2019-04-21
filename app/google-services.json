@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "145720945130",
+    "firebase_url": "https://lapitclone-61ef6.firebaseio.com",
+    "project_id": "lapitclone-61ef6",
+    "storage_bucket": "lapitclone-61ef6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145720945130:android:ee1515e85a123c32",
+        "android_client_info": {
+          "package_name": "com.shadow.lapitclone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145720945130-544ks7rcrtkhq552di7cb7bn5jgehhbv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shadow.lapitclone",
+            "certificate_hash": "8b7732adc54798f800c595d4cea8d6dabd3c0c59"
+          }
+        },
+        {
+          "client_id": "145720945130-49kcv5ibu2qetior076bo5ndi8kmilea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7CXx79eqbCTMxaU6D3CodvG_evjG9eTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145720945130-49kcv5ibu2qetior076bo5ndi8kmilea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
