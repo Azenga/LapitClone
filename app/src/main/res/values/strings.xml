@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">LapitClone</string>
+    <string name="welcome_msg">Welcome to Lapit Chat Clone</string>
+    <string name="accounts">Accounts</string>
+    <string name="email_hint">Email Address...</string>
+    <string name="pwd_hint">Password...</string>
+    <string name="cpwd_hint">Confirm Password...</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="need_a_new_account">Need a new account?</string>
+    <string name="hav_an_acc">Already Have an account?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="acc_settings">Accout Settings</string>
+    <string name="all_users">All Users</string>
+    <string name="logout">Logout</string>
 </resources>
