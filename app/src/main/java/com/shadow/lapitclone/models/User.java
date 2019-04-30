@@ -1,4 +1,4 @@
-package com.shadow.lapitclone;
+package com.shadow.lapitclone.models;
 
 import com.google.firebase.firestore.Exclude;
 

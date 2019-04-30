@@ -10,7 +10,7 @@
     <string name="need_a_new_account">Need a new account?</string>
     <string name="hav_an_acc">Already Have an account?</string>
     <string name="sign_up">Sign up</string>
-    <string name="acc_settings">User Profile</string>
+    <string name="acc_settings">Account Setup</string>
     <string name="all_users">All Users</string>
     <string name="logout">Logout</string>
     <string name="username">Username</string>

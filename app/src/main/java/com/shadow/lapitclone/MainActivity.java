@@ -1,25 +1,33 @@
 package com.shadow.lapitclone;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.shadow.lapitclone.adapters.SectionsPagerAdapter;
 import com.shadow.lapitclone.fragments.ChatsFragment;
 import com.shadow.lapitclone.fragments.FriendsFragment;
 import com.shadow.lapitclone.fragments.RequestsFragment;
+import com.shadow.lapitclone.models.User;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     private FirebaseAuth mAuth;
+    private FirebaseFirestore mDb;
 
     private ViewPager container;
     private TabLayout tabs;
@@ -32,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
+        mDb = FirebaseFirestore.getInstance();
 
         initComponents();
 
@@ -64,7 +73,26 @@ public class MainActivity extends AppCompatActivity {
 
         if (user == null) {
             sendToStartActivity();
+        } else {
+            checkProfile(user.getUid());
         }
+    }
+
+    private void checkProfile(String uid) {
+        mDb.document("users/" + uid)
+                .addSnapshotListener((documentSnapshot, e) -> {
+                    if (e != null) {
+                        Log.e(TAG, "getUserDetails: Failed", e);
+                        return;
+                    }
+                    if (!documentSnapshot.exists()) {
+                        Snackbar.make(findViewById(android.R.id.content), "Crop Image", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Tap Here", view -> openSetupAccountActivity())
+                                .show();
+                    } else {
+                        Toast.makeText(this, "Profile is cool", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
@@ -78,12 +106,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_settings:
-
-                Intent intent = new Intent(this, UserProfileActivity.class);
-                startActivity(intent);
-
+                openSetupAccountActivity();
                 return true;
             case R.id.nav_users:
+                startActivity(new Intent(this, TempAllUserActivity.class));
                 return true;
             case R.id.nav_logout:
                 mAuth.signOut();
@@ -92,6 +118,12 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void openSetupAccountActivity() {
+
+        Intent intent = new Intent(this, SetupAccountActivity.class);
+        startActivity(intent);
     }
 
     private void sendToStartActivity() {

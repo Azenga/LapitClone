@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -20,10 +21,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.shadow.lapitclone.models.User;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -109,7 +112,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                 .addOnFailureListener(
                         e -> {
                             Toast.makeText(this, "Image upload failed, try again later", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "updateProfile: Upload Image Failed", e);
+                            Log.e(TAG, "updateUI: Upload Image Failed", e);
                             progressDialog.dismiss();
                         }
                 );
@@ -124,7 +127,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                         task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(this, "User profile updated", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(this, UserProfileActivity.class));
+                                startActivity(new Intent(this, MainActivity.class));
                                 finish();
                             } else {
                                 Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
@@ -225,7 +228,8 @@ public class SetupAccountActivity extends AppCompatActivity {
                             .setAction("Tap Here", view -> {
                                 imageSelected = false;
                                 openCroppingActivity(data.getData());
-                            });
+                            })
+                            .show();
 
             }
         }
@@ -253,6 +257,63 @@ public class SetupAccountActivity extends AppCompatActivity {
             startActivityForResult(intent, RC_CROP_IMAGE);
         } else {
             Toast.makeText(this, "Please installing applications", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }else{
+            getUserDetails(user.getUid());
+        }
+    }
+
+    private void getUserDetails(String uid) {
+        mDb.document("users/" + uid)
+                .addSnapshotListener((documentSnapshot, e) -> {
+                    if (e != null) {
+                        Log.e(TAG, "getUserDetails: Failed", e);
+                        return;
+                    }
+                    if (documentSnapshot != null) {
+                        if (documentSnapshot.exists()) {
+                            User user = documentSnapshot.toObject(User.class);
+
+                            if (user != null) {
+                                updateUI(user);
+                            }
+                        } else {
+                            Toast.makeText(this, "You have not updated your profile", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+
+    private void updateUI(User user) {
+        usernameTIET.setText(user.getUsername());
+        statusTIET.setText(user.getStatus());
+
+        if (user.getImageName() != null) {
+
+            StorageReference profileRef = mRef.child(user.getImageName());
+            final long MB = 1024 * 1024;
+            profileRef.getBytes(MB)
+                    .addOnSuccessListener(
+                            bytes -> {
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                profileIV.setImageBitmap(bitmap);
+                                imageSelected = true;
+                            }
+                    )
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Failed to get the Image", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "updateUI: Getting Image Failed", e);
+                    });
         }
     }
 }
